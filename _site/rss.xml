@@ -1,178 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>廖柯宇的独立博客</title>
-    <description>昵称悟空，千禧一代，前端开发者/伪极客/灵魂摄影师，热爱技术&amp;设计。很高兴能在这里与你分享我对技术和生活的思考。</description>
+    <title>Liangiyv's Blog</title>
+    <description>深度学习中～</description>
     <link>http://localhost:4000//</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 19 Mar 2020 07:27:01 -0700</pubDate>
-    <lastBuildDate>Thu, 19 Mar 2020 07:27:01 -0700</lastBuildDate>
+    <pubDate>Thu, 19 Mar 2020 17:52:22 -0700</pubDate>
+    <lastBuildDate>Thu, 19 Mar 2020 17:52:22 -0700</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
-        <title>MathJax Test</title>
-        <description>&lt;p&gt;mathjax in markdown :)&lt;/p&gt;
+        <title>论文笔记：WHAT IS THE STATE OF NEURAL NETWORK PRUNING?</title>
+        <description>&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
 
-&lt;p&gt;&lt;strong&gt;这是一个不&lt;code class=&quot;highlighter-rouge&quot;&gt;align&lt;/code&gt;的公式&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;作者归纳总结了81篇过去的压缩算法，并进行了初步的同步比较，然后给出了无法进一步比较的原因。提出了&lt;a href=&quot;https://github.com/jjgo/shrinkbench&quot;&gt;ShrunkBench&lt;/a&gt;，方便未来的Pruning类文章进行比较，得出真正有效的Pruning算法。。提出应当指定的未来Pruning论文应当遵循的标准，如同时报告acc1和acc5，需要在大型数据集上（不止MNIST）和使用现代的网络（不能用AlexNet）等要求。&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\forall \alpha \in A, \quad a \cdot b = 0&lt;/script&gt;
+&lt;p&gt;最后揭露了一些能够使压缩算法表现良好的Tricks，比如只比较一个指标、使用不同的初始权重值、只针对特定的网络模型等等&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;这是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;align&lt;/code&gt;的公式&lt;/strong&gt;：&lt;/p&gt;
+&lt;h2 id=&quot;research-objective&quot;&gt;Research Objective&lt;/h2&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\text{for OTP : $\qquad$ if }\quad E(k,\:m)=c\\
-\begin{align}
-k\oplus m &amp;= c \\
-k &amp;= m\oplus c
-\end{align}
-\\
-\#\{\;k \in \mathscr K : \quad E(k,\:m)=c \;\}=1 \quad \forall m,\:c %]]&gt;&lt;/script&gt;
+&lt;p&gt;作者的研究目标。是比较81篇论文中的Pruning方法，并提出了一个用于比较压缩方法的框架，在比较不同压缩方法方面做出了贡献。并提出了未来评判Pruning类论文的一些标准，减少了使用Trick发论文的可能。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;公式块要想有较好的显示效果，必须在公式块标记符&lt;code class=&quot;highlighter-rouge&quot;&gt;$$&lt;/code&gt;&lt;strong&gt;前后&lt;/strong&gt;留有空行，否则公式将不能正常居中。行内公式无此问题。&lt;/p&gt;
-</description>
-        <pubDate>Sun, 30 Jul 2017 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/2017/07/30/mathjax-test.html</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/07/30/mathjax-test.html</guid>
-        
-        <category>mathjax</category>
-        
-        
-        <category>test</category>
-        
-      </item>
-    
-      <item>
-        <title>H2O theme for Jekyll</title>
-        <description>&lt;p&gt;正如我在&lt;a href=&quot;http://weibo.com/1374146504/profile?topnav=1&amp;amp;wvr=6&quot;&gt;微博&lt;/a&gt;上所说的，使用&lt;a href=&quot;http://jekyll.com.cn/&quot;&gt;Jekyll&lt;/a&gt;半年以来一直没有令我满意的主题模板，所以开始计划自己写一套好看又好用的主题模板。设计之初就明确了极简主义，风格采用扁平化了，通过卡片式设计来进行区块分明的布局，参考了Medium的ui样式和知乎专栏的视觉风格。&lt;/p&gt;
+&lt;h2 id=&quot;problem-statement&quot;&gt;Problem Statement&lt;/h2&gt;
 
-&lt;h2 id=&quot;h2o&quot;&gt;H2O&lt;/h2&gt;
+&lt;p&gt;Few papers compare to one another, and methodologies are so inconsistent between papers that we could not make these comparisons ourselves.  （很少有论文可以相互比较，而且论文之间的方法学如此不一致，以至于我们自己无法进行这些比较。）&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/kaeyleo/jekyll-theme-H2O&quot;&gt;源码及使用文档 →&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;例如，有四分之一的论文与其他修剪方法相比，有一半的论文与至多其他修剪方法相比，并且数十种方法从未与任何后续工作相比。 此外，即使在三分之一的论文中也没有出现数据集/网络对，评估指标差异很大，超参数和其他联合创始人（counfounders  ）也有所不同或不确定。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-realhome.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;methods&quot;&gt;Method(s)&lt;/h2&gt;
 
-&lt;p&gt;新主题名叫”H2O”，基于Jekyll 3.0.x（使用&lt;code class=&quot;highlighter-rouge&quot;&gt;gem update jekyll&lt;/code&gt;升级Jekyll），Markdown的代码高亮不再支持pygments转而使用rouge，咱已经默认配置了 &lt;code class=&quot;highlighter-rouge&quot;&gt;highlighter: rouge&lt;/code&gt; 。用到的技术栈也很简单：引入jQuery类库，使用Sass编写样式，使用Gulp来编译Sass、合并压缩css、js，开源在&lt;a href=&quot;https://github.com/kaeyleo/jekyll-theme-H2O&quot;&gt;Github&lt;/a&gt;上，稍作配置即可用于你的Jekyll博客上。&lt;/p&gt;
+&lt;p&gt;作者采用的方法是论文复现，基于前人的方法，提供了Baseline，写了一套适合评估压缩算法进行对比的工具集。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-sketchdesign.png&quot; alt=&quot;Design with Sketch&quot; /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;evaluation&quot;&gt;Evaluation&lt;/h2&gt;
 
-&lt;p&gt;使用Sketch完成H2O主题的原型设计&lt;/p&gt;
+&lt;p&gt;作者总结出图表（&lt;strong&gt;Table 1&lt;/strong&gt;），归纳出&lt;u&gt;使用最多的数据集-网络对&lt;/u&gt;，并在下面的测试中使用top4使用频率的Pair结对。&lt;strong&gt;figure3&lt;/strong&gt;中不同时间的实验用不同颜色标出，然后做了Acc-压缩率的对比实验&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-vs.jpg&quot; alt=&quot;My Jekyll themes&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;作者总结出了论文给出的最优点的数量和论文使用的数据集-网络对的数目，提出大多数论文都使用了3个或以下的实验&lt;/p&gt;
 
-&lt;p&gt;比之前漂亮不少吧，下面聊聊H2O的新特性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ss3&lt;/strong&gt; &lt;strong&gt;figure1&lt;/strong&gt;通过绘制ImageNet上的压缩/加速图，对于不同的架构（MobileNet-v2、ResNet、VGG、EfficientNet），作者给出了几点结论。1）压缩有效性，2）修剪无法生成更好的结构，3）对于效率低的网络效果更好&lt;/p&gt;
 
-&lt;h2 id=&quot;新特性&quot;&gt;新特性&lt;/h2&gt;
+&lt;p&gt;This lack of comparisons stems largely from a lackof experimental standardization and the resulting fragmen-tation in reported results. （缺乏比较的主要原因是缺乏实验的标准化以及报告结果的不完整。）&lt;/p&gt;
 
-&lt;h3 id=&quot;主题配色&quot;&gt;主题配色&lt;/h3&gt;
+&lt;p&gt;作者如何评估自己的方法，实验的setup是什么样的，有没有问题或者可以借鉴的地方。&lt;/p&gt;
 
-&lt;p&gt;支持两种主题配色——蓝色和粉色。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ss4&lt;/strong&gt;中归纳并提出1）以往Pruning论文缺少与其他论文比较 2）实验的数据集和网络结构不同 3）调节参数不同 4）不完全的归纳结果 5）不同的参数设置&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://github.com/kaeyleo/jekyll-theme-H2O/blob/master/screenshot/jekyll-theme-h2o-themecolor.jpg?raw=true&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ss5&lt;/strong&gt;中，作者提出了两点无法进一步比较的原因 1）Architecture Ambiguity架构模糊 2）Metrics Ambiguity指标模糊&lt;/p&gt;
 
-&lt;h3 id=&quot;侧边栏&quot;&gt;侧边栏&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;ss6&lt;/strong&gt;总结和建议，提出了过去论文中的5点问题，并为了将来能够在方法之间进行直接比较，提出了9点未来论文需要做到的要求，包含需要同时报告acc1和acc5，需要在大型数据集上（不止MNIST）和使用现代的网络（不能用AlexNet）等要求。&lt;/p&gt;
 
-&lt;p&gt;相比自己上一个版本的博客主题，首页增加了侧边栏，方便展示博主的个人信息和文章标签。&lt;/p&gt;
+&lt;p&gt;在&lt;strong&gt;ss7&lt;/strong&gt;中，作者提出了他们的比较框架，提供了“&lt;em&gt;标准化和可扩展的功能，用于训练，修剪，微调，计算指标和绘图，并使用一组标准化的预训练模型和数据集.ShrinkBench基于PyTorch&lt;/em&gt;，旨在允许 具有任意评分功能的方法的简便评估，跨层修剪的分配以及稀疏结构。 特别是，给定一个回调定义如何在给定的迭代中为模型的参数张量计算掩码，ShrinkBench将自动应用修剪，根据标准训练或微调设置更新网络，并跨许多模型，数据集，随机计算度量 种子和修剪水平。”&lt;/p&gt;
 
-&lt;h3 id=&quot;社交图标&quot;&gt;社交图标&lt;/h3&gt;
+&lt;p&gt;提供了baseline的Pruning修建方法：&lt;/p&gt;
 
-&lt;p&gt;使用阿里的图标管理平台&lt;a href=&quot;http://iconfont.cn/&quot;&gt;Iconfont&lt;/a&gt;整理了一套&lt;strike&gt;墙内外&lt;/strike&gt;常用的社交图标，包括微博、知乎、掘金、简书、Github等十多个网站，鼠标悬停会显示该站的主题色。&lt;/p&gt;
+&lt;p&gt;​	•全局幅度修剪-修剪网络中任何位置绝对值最低的权重。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-snstext.jpg&quot; alt=&quot;social iconfont&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;​	•分层幅度修剪-对于每个层，修剪绝对值最低的权重。&lt;/p&gt;
 
-&lt;h3 id=&quot;前后文导航&quot;&gt;前后文导航&lt;/h3&gt;
+&lt;p&gt;​	•全局梯度幅度修剪-修剪绝对值最低的权重（权重×平均值），在一批输入上进行评估。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-nextpostnav.png&quot; alt=&quot;Next post navigator&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;​	•分层梯度幅度修剪-对于每一层，修剪在一批输入上评估的最小绝对值（权重×梯度）的权重。&lt;/p&gt;
 
-&lt;h3 id=&quot;自定义文章封面&quot;&gt;自定义文章封面&lt;/h3&gt;
+&lt;p&gt;​	•随机修剪-以等于要修剪的网络部分的概率独立地修剪每个权重&lt;/p&gt;
 
-&lt;p&gt;在Markdown的&lt;a href=&quot;http://jekyll.com.cn/docs/frontmatter/&quot;&gt;文章头信息&lt;/a&gt;里添加cover参数来配置文章的封面图片，如果没有配置封面，则默认【主题色+底纹】的组合作为文章封面。值得一提的是，H2O有两种（粉、蓝）主题色和六种底纹（电路板、食物、云海、钻石等等）供你选择。&lt;/p&gt;
+&lt;p&gt;identi-fied various pitfalls 提出了在文献中可能遇到的陷阱，并使用ShrinkBench可以避免&lt;/p&gt;
 
-&lt;h3 id=&quot;头图个性化底纹&quot;&gt;头图个性化底纹&lt;/h3&gt;
+&lt;p&gt;分为三个部分：1）不同指标是不同的，不能用一个来代表，&lt;strong&gt;fig6&lt;/strong&gt;给出了验证2个指标加速比和压缩比时，修剪方式表示的性能不同，层权重修剪在加速比上优秀而在压缩比上不占优势， 2）结果与3点相关：数据集，模型，修剪量，不能仓促得出结论，&lt;strong&gt;figure7&lt;/strong&gt;给出了一个不同模型相同修剪方法会有差异。3）使用相同的初始模型。&lt;strong&gt;fig8&lt;/strong&gt;给出了两个不同初始权重的模型AB，发现在A上Global修剪和Layer修剪差不多，但是在B上Global就比Layer好很多。&lt;/p&gt;
 
-&lt;p&gt;在没有图片的情况下单纯显示颜色会不会太无趣了点？于是想到了加入底纹元素，底纹素材是SVG格式的（保存在css样式里），加载比图片快很多。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-headerpatterns.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;代码高亮&quot;&gt;代码高亮&lt;/h3&gt;
-
-&lt;p&gt;模板引入了&lt;a href=&quot;http://prismjs.com&quot;&gt;Prism.js&lt;/a&gt;，一款轻量、可扩展的代码语法高亮库。&lt;/p&gt;
-
-&lt;p&gt;很多知名网站如&lt;a href=&quot;https://developer.mozilla.org/&quot;&gt;MDN&lt;/a&gt;、&lt;a href=&quot;https://css-tricks.com/&quot;&gt;css-tricks&lt;/a&gt;也在用它，JavaScript 之父 &lt;a href=&quot;https://brendaneich.com/&quot;&gt;Brendan Eich&lt;/a&gt; 也在个人博客上使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-highlight.png&quot; alt=&quot;代码高亮&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;遵循 &lt;a href=&quot;https://www.w3.org/TR/html5/grouping-content.html#the-pre-element&quot;&gt;HTML5&lt;/a&gt; 标准，Prism 使用语义化的 &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;pre&amp;gt;&lt;/code&gt; 元素和 &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;code&amp;gt;&lt;/code&gt; 元素来标记代码区块：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;pre&amp;gt;&amp;lt;code class=&quot;language-css&quot;&amp;gt;p { color: red }&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;在Markdown中你可以这样写：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; ```css
-	p { color: red }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;```&lt;/p&gt;
-
-&lt;p&gt;支持语言：&lt;/p&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;HTML&lt;/li&gt;
-  &lt;li&gt;CSS&lt;/li&gt;
-  &lt;li&gt;Sass&lt;/li&gt;
-  &lt;li&gt;JavaScript&lt;/li&gt;
-  &lt;li&gt;CoffeeScript&lt;/li&gt;
-  &lt;li&gt;Java&lt;/li&gt;
-  &lt;li&gt;C-like&lt;/li&gt;
-  &lt;li&gt;Swift&lt;/li&gt;
-  &lt;li&gt;PHP&lt;/li&gt;
-  &lt;li&gt;Go&lt;/li&gt;
-  &lt;li&gt;Python&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;suggest concrete remedies in the form of a list of best practices (列出了一系列pruning的最佳实践)(Strong)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;open-source library &lt;strong&gt;ShrinkBench&lt;/strong&gt; (Strong)&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;第三方评论&quot;&gt;第三方评论&lt;/h3&gt;
+&lt;h2 id=&quot;notes&quot;&gt;Notes&lt;/h2&gt;
 
-&lt;p&gt;由于多说关闭，又对国内其他第三方评论插件无感，所以将&lt;a href=&quot;https://disqus.com/&quot;&gt;Disqus&lt;/a&gt;列为首选（目前模板也只提供了这个），请自备梯子。&lt;/p&gt;
+&lt;p&gt;(optional) 不符合此框架，但需要额外记录的笔记。&lt;/p&gt;
 
-&lt;h3 id=&quot;移动端优化&quot;&gt;移动端优化&lt;/h3&gt;
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
 
-&lt;p&gt;响应式设计，对手机和平板等移动设备做了优化。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://on2171g4d.bkt.clouddn.com/jekyll-theme-h2o-realm.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;关于阅读体验&quot;&gt;关于阅读体验&lt;/h3&gt;
-
-&lt;p&gt;我认为在内容质量相同的情况下，出色的沉浸式阅读体验是博客的核心。&lt;/p&gt;
-
-&lt;p&gt;H2O在这方面还有很多需要完善的地方，比如：&lt;strike&gt;代码高亮&lt;/strike&gt;、夜间模式、查看大图…&lt;/p&gt;
-
-&lt;h3 id=&quot;其他特性&quot;&gt;其他特性：&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;网页标题SEO优化&lt;/li&gt;
-  &lt;li&gt;标签索引，点击标签跳转到标签目录，即可查看对应的全部文章&lt;/li&gt;
-  &lt;li&gt;漂亮&lt;/li&gt;
-  &lt;li&gt;好看&lt;/li&gt;
-  &lt;li&gt;美&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;最后&quot;&gt;最后&lt;/h2&gt;
-
-&lt;p&gt;本想趁这次机会将整站https化的，但折腾了半天发现弹性web托管并不支持，所以暂时搁置https的想法。另外，博客统计工具一直使用的是&lt;a href=&quot;https://tongji.baidu.com&quot;&gt;百度统计&lt;/a&gt;，这次新增了Google Analytics。&lt;/p&gt;
-
-&lt;p&gt;这次从0到1，独自设计、开发再到发布大约用了一周时间，也算完成一个小小的开源项目了，后续也将持续完善和更新，欢迎&lt;a href=&quot;https://github.com/kaeyleo/jekyll-theme-H2O&quot;&gt;Star&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;(optional) 列出相关性高的文献，以便之后可以继续track下去。&lt;/p&gt;
 </description>
-        <pubDate>Tue, 18 Apr 2017 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/2017/04/18/new-theme-h2o.html</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/04/18/new-theme-h2o.html</guid>
+        <pubDate>Thu, 19 Mar 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/2020/03/19/WHAT-IS-THE-STATE-OF-NEURAL-NETWORK-PRUNING.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2020/03/19/WHAT-IS-THE-STATE-OF-NEURAL-NETWORK-PRUNING.html</guid>
         
-        <category>jekyll</category>
-        
-        <category>前端开发</category>
-        
-        <category>设计</category>
+        <category>Pruning</category>
         
         
-        <category>技术</category>
+        <category>模型压缩</category>
         
       </item>
     

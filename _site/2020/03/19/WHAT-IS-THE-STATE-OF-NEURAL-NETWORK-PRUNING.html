@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文笔记：WHAT IS THE STATE OF NEURAL NETWORK PRUNING? - Liangiyv's Blog</title>
+    <meta name="author"  content="LiangSiyv">
+    <meta name="description" content="论文笔记：WHAT IS THE STATE OF NEURAL NETWORK PRUNING?">
+    <meta name="keywords"  content="Pruning">
+    <!-- Open Graph -->
+    <meta property="og:title" content="论文笔记：WHAT IS THE STATE OF NEURAL NETWORK PRUNING? - Liangiyv's Blog">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:4000/2020/03/19/WHAT-IS-THE-STATE-OF-NEURAL-NETWORK-PRUNING.html">
+    <meta property="og:description" content="深度学习中～">
+    <meta property="og:site_name" content="Liangiyv's Blog">
+    <link rel="stylesheet" href="//cdn.staticfile.org/normalize/6.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_roc50gemkxpw4s4i.css">
+    <link rel="stylesheet" href="/assets/css/github-markdown.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/share.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+	
+	<!--
+Author: Ray-Eldath
+refer to:
+ - http://docs.mathjax.org/en/latest/options/index.html
+-->
+
+	<script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+		jax: ["input/TeX", "output/HTML-CSS"],
+		tex2jax: {
+			inlineMath: [ ["$", "$"] ],
+			displayMath: [ ["$$", "$$"] ],
+			skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+		},
+		"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+      });
+    </script>
+
+	
+    <!--
+Author: Ray-Eldath
+-->
+<style>
+    .markdown-body .anchor{
+        float: left;
+        margin-top: -8px;
+        margin-left: -20px;
+        padding-right: 4px;
+        line-height: 1;
+        opacity: 0;
+    }
+    
+    .markdown-body .anchor .anchor-icon{
+        font-size: 15px
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        let nodes = document.querySelector(".markdown-body").querySelectorAll("h1,h2,h3")
+        for(let node of nodes) {
+            var anchor = document.createElement("a")
+            var anchorIcon = document.createElement("i")
+            anchorIcon.setAttribute("class", "fa fa-anchor fa-lg anchor-icon")
+            anchorIcon.setAttribute("aria-hidden", true)
+            anchor.setAttribute("class", "anchor")
+            anchor.setAttribute("href", "#" + node.getAttribute("id"))
+            
+            anchor.onmouseover = function() {
+                this.style.opacity = "0.4"
+            }
+            
+            anchor.onmouseout = function() {
+                this.style.opacity = "0"
+            }
+            
+            anchor.appendChild(anchorIcon)
+            node.appendChild(anchor)
+        }
+    })
+</script>
+</head>
+
+
+<body>
+  <!--[if lt IE 10]>
+<div class="alert-danger" role="alert">你的浏览器实在太太太旧了，放学别走，升级完浏览器再说！<a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div>
+<![endif]-->
+  <input id="nm-switch" type="hidden" value="true"> <header class="g-header">
+    <div class="g-logo">
+      <a href="/"></a>
+    </div>
+    <i id="menu-toggle" class="iconfont icon-menu"></i>
+    <nav class="g-nav">
+        <ul>
+            
+            <li><a href="/">home</a></li>
+            
+            <li><a href="/tags.html">tags</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+
+  <header
+    class="g-banner post-header post-pattern-circuitBoard bgcolor-default "
+    data-theme="default"
+  >
+    <div class="post-wrapper">
+      <div class="post-tags">
+        
+          
+            <a href="/tags.html#Pruning" class="post-tag">Pruning</a>
+          
+        
+      </div>
+      <h1>论文笔记：WHAT IS THE STATE OF NEURAL NETWORK PRUNING?</h1>
+      <div class="post-meta">
+        <span class="post-meta-item"><i class="iconfont icon-author"></i>LiangSiyv</span>
+        <time class="post-meta-item" datetime="20-03-19"><i class="iconfont icon-date"></i>19 Mar 2020</time>
+      </div>
+    </div>
+    
+    <div class="filter"></div>
+      <div class="post-cover" style="background: url('') center no-repeat; background-size: cover;"></div>
+    
+  </header>
+
+  <div class="post-content visible">
+    
+    <h2 class="post-subtitle">WHAT IS THE STATE OF NEURAL NETWORK PRUNING?</h2>
+    
+
+    <article class="markdown-body">
+      <h2 id="summary">Summary</h2>
+
+<p>作者归纳总结了81篇过去的压缩算法，并进行了初步的同步比较，然后给出了无法进一步比较的原因。提出了<a href="https://github.com/jjgo/shrinkbench">ShrunkBench</a>，方便未来的Pruning类文章进行比较，得出真正有效的Pruning算法。。提出应当指定的未来Pruning论文应当遵循的标准，如同时报告acc1和acc5，需要在大型数据集上（不止MNIST）和使用现代的网络（不能用AlexNet）等要求。</p>
+
+<p>最后揭露了一些能够使压缩算法表现良好的Tricks，比如只比较一个指标、使用不同的初始权重值、只针对特定的网络模型等等</p>
+
+<h2 id="research-objective">Research Objective</h2>
+
+<p>作者的研究目标。是比较81篇论文中的Pruning方法，并提出了一个用于比较压缩方法的框架，在比较不同压缩方法方面做出了贡献。并提出了未来评判Pruning类论文的一些标准，减少了使用Trick发论文的可能。</p>
+
+<h2 id="problem-statement">Problem Statement</h2>
+
+<p>Few papers compare to one another, and methodologies are so inconsistent between papers that we could not make these comparisons ourselves.  （很少有论文可以相互比较，而且论文之间的方法学如此不一致，以至于我们自己无法进行这些比较。）</p>
+
+<p>例如，有四分之一的论文与其他修剪方法相比，有一半的论文与至多其他修剪方法相比，并且数十种方法从未与任何后续工作相比。 此外，即使在三分之一的论文中也没有出现数据集/网络对，评估指标差异很大，超参数和其他联合创始人（counfounders  ）也有所不同或不确定。</p>
+
+<h2 id="methods">Method(s)</h2>
+
+<p>作者采用的方法是论文复现，基于前人的方法，提供了Baseline，写了一套适合评估压缩算法进行对比的工具集。</p>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>作者总结出图表（<strong>Table 1</strong>），归纳出<u>使用最多的数据集-网络对</u>，并在下面的测试中使用top4使用频率的Pair结对。<strong>figure3</strong>中不同时间的实验用不同颜色标出，然后做了Acc-压缩率的对比实验</p>
+
+<p>作者总结出了论文给出的最优点的数量和论文使用的数据集-网络对的数目，提出大多数论文都使用了3个或以下的实验</p>
+
+<p><strong>ss3</strong> <strong>figure1</strong>通过绘制ImageNet上的压缩/加速图，对于不同的架构（MobileNet-v2、ResNet、VGG、EfficientNet），作者给出了几点结论。1）压缩有效性，2）修剪无法生成更好的结构，3）对于效率低的网络效果更好</p>
+
+<p>This lack of comparisons stems largely from a lackof experimental standardization and the resulting fragmen-tation in reported results. （缺乏比较的主要原因是缺乏实验的标准化以及报告结果的不完整。）</p>
+
+<p>作者如何评估自己的方法，实验的setup是什么样的，有没有问题或者可以借鉴的地方。</p>
+
+<p><strong>ss4</strong>中归纳并提出1）以往Pruning论文缺少与其他论文比较 2）实验的数据集和网络结构不同 3）调节参数不同 4）不完全的归纳结果 5）不同的参数设置</p>
+
+<p><strong>ss5</strong>中，作者提出了两点无法进一步比较的原因 1）Architecture Ambiguity架构模糊 2）Metrics Ambiguity指标模糊</p>
+
+<p><strong>ss6</strong>总结和建议，提出了过去论文中的5点问题，并为了将来能够在方法之间进行直接比较，提出了9点未来论文需要做到的要求，包含需要同时报告acc1和acc5，需要在大型数据集上（不止MNIST）和使用现代的网络（不能用AlexNet）等要求。</p>
+
+<p>在<strong>ss7</strong>中，作者提出了他们的比较框架，提供了“<em>标准化和可扩展的功能，用于训练，修剪，微调，计算指标和绘图，并使用一组标准化的预训练模型和数据集.ShrinkBench基于PyTorch</em>，旨在允许 具有任意评分功能的方法的简便评估，跨层修剪的分配以及稀疏结构。 特别是，给定一个回调定义如何在给定的迭代中为模型的参数张量计算掩码，ShrinkBench将自动应用修剪，根据标准训练或微调设置更新网络，并跨许多模型，数据集，随机计算度量 种子和修剪水平。”</p>
+
+<p>提供了baseline的Pruning修建方法：</p>
+
+<p>​	•全局幅度修剪-修剪网络中任何位置绝对值最低的权重。</p>
+
+<p>​	•分层幅度修剪-对于每个层，修剪绝对值最低的权重。</p>
+
+<p>​	•全局梯度幅度修剪-修剪绝对值最低的权重（权重×平均值），在一批输入上进行评估。</p>
+
+<p>​	•分层梯度幅度修剪-对于每一层，修剪在一批输入上评估的最小绝对值（权重×梯度）的权重。</p>
+
+<p>​	•随机修剪-以等于要修剪的网络部分的概率独立地修剪每个权重</p>
+
+<p>identi-fied various pitfalls 提出了在文献中可能遇到的陷阱，并使用ShrinkBench可以避免</p>
+
+<p>分为三个部分：1）不同指标是不同的，不能用一个来代表，<strong>fig6</strong>给出了验证2个指标加速比和压缩比时，修剪方式表示的性能不同，层权重修剪在加速比上优秀而在压缩比上不占优势， 2）结果与3点相关：数据集，模型，修剪量，不能仓促得出结论，<strong>figure7</strong>给出了一个不同模型相同修剪方法会有差异。3）使用相同的初始模型。<strong>fig8</strong>给出了两个不同初始权重的模型AB，发现在A上Global修剪和Layer修剪差不多，但是在B上Global就比Layer好很多。</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<ul>
+  <li>
+    <p>suggest concrete remedies in the form of a list of best practices (列出了一系列pruning的最佳实践)(Strong)</p>
+  </li>
+  <li>
+    <p>open-source library <strong>ShrinkBench</strong> (Strong)</p>
+  </li>
+</ul>
+
+<h2 id="notes">Notes</h2>
+
+<p>(optional) 不符合此框架，但需要额外记录的笔记。</p>
+
+<h2 id="reference">Reference</h2>
+
+<p>(optional) 列出相关性高的文献，以便之后可以继续track下去。</p>
+
+    </article>
+
+    
+    <div class="social-share-wrapper">
+      <div class="social-share"></div>
+    </div>
+    
+  </div>
+
+  <section class="author-detail">
+    <section class="post-footer-item author-card">
+      <div class="avatar">
+        <img src="" alt="">
+      </div>
+      <div class="author-name" rel="author">LiangSiyv</div>
+      <div class="bio">
+        <p>深度学习中～</p>
+      </div>
+      
+      <ul class="sns-links">
+        
+        <li>
+          <a href="//github.com/LiangSiyv" target="_blank">
+                    <i class="iconfont icon-github"></i>
+                </a>
+        </li>
+        
+      </ul>
+      
+    </section>
+    <section class="post-footer-item read-next">
+      
+
+      
+      <div class="read-next-item">
+        <a href="/2017/04/18/hello-jekyll.html" class="read-next-link"></a>
+          <section>
+            <span>Hello Jekyll</span>
+            <p>  Transform your plain text into static websites and blogs.</p>
+          </section>
+          
+          <div class="filter"></div>
+          <img src="http://on2171g4d.bkt.clouddn.com/jekyll-banner.png" alt="">
+          
+      </div>
+      
+    </section>
+    
+  </section>
+
+  <footer class="g-footer">
+  <section>Liangiyv's Blog ©
+  
+  
+  2020
+  </section>
+  <section>Powered by <a href="//jekyllrb.com">Jekyll</a> | <a href="https://github.com/kaeyleo/jekyll-theme-H2O">Theme H2O</a></section>
+</footer>
+
+
+  <script src="/assets/js/social-share.min.js"></script>
+  <script>
+    socialShare('.social-share', {
+      sites: [
+        
+          'wechat'
+          ,
+          
+        
+          'weibo'
+          ,
+          
+        
+          'douban'
+          ,
+          
+        
+          'twitter'
+          
+        
+      ],
+      wechatQrcodeTitle: "分享到微信朋友圈",
+      wechatQrcodeHelper: '<p>扫码后点击右上角</p><p>将本文分享至朋友圈</p>'
+    });
+  </script>
+
+  
+
+  <script src="/assets/js/prism.js"></script>
+  <script src="/assets/js/index.min.js"></script>
+</body>
+
+</html>
